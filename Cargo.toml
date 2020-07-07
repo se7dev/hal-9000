@@ -14,3 +14,4 @@ path="src/main.rs"
 [dependencies]
 log = "0.4.8"
 simple_logger = "1.6.0"
+irc = "0.13.5"
