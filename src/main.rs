@@ -7,11 +7,14 @@ use std::env;
 
 fn main() {
     let oauth_token = env::var("TWITCH_PW").unwrap();
+    let nick = env::var("NICKNAME").unwrap();
     let cfg = Config {
-        nickname: Some("HAL0900".to_owned()), //use the name of the account for the twitch bot
+        nickname: Some(nick.to_owned()), //use the name of the account for the twitch bot
         server: Some("irc.chat.twitch.tv".to_owned()),
         port: Some(6667),
-        password: Some(oauth_token.to_owned()), // use the oauth token from the twitch bot account
+        // use the oauth token from the twitch bot account
+        // get it from https://twitchapps.com/tmi
+        password: Some(oauth_token.to_owned()),
         channels: Some(vec!["#rowe90".to_owned()]),
         ..Default::default()
     };
