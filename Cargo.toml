@@ -16,6 +16,10 @@ log = "0.4.8"
 simple_logger = "1.6.0"
 irc = "0.13.5"
 mongodb = "1.0.0"
+<<<<<<< HEAD
 futures = "0.3.5"
 tokio = "0.2.22"
 chrono = "0.4.13"
+=======
+futures = "0.3.5"
+>>>>>>> 730c9ee361b469451ddab53578c3c8b34ac4d070
