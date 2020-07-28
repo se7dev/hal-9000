@@ -4,8 +4,6 @@ version = "0.1.0"
 authors = ["Robin und Sebastian"]
 edition = "2018"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [[bin]]
 name="hal_9000"
 path="src/main.rs"
@@ -15,3 +13,4 @@ path="src/main.rs"
 log = "0.4.8"
 simple_logger = "1.6.0"
 irc = "0.13.5"
+mongodb = "1.0.0"
