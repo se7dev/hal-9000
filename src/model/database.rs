@@ -51,7 +51,7 @@ async fn get_logs(date: String) -> Result<()> {
     let mut cursor = coll.find(doc! { "date:": time }, None).await?;
 
     // Iterate over each document in the cursor, using serde to
-    // deserialize them into Pets.
+    // deserialize them into Messages.
     while let Some(result) = cursor.next().await {
         match result {
             Ok(document) => {
