@@ -6,7 +6,7 @@ use irc::client::prelude::*;
 use std::env;
 
 fn main() {
-    let oauth_token = env::var("TWITCH_PW").unwrap();
+    /* let oauth_token = env::var("TWITCH_PW").unwrap();
     let nick = env::var("NICKNAME").unwrap();
     let cfg = Config {
         nickname: Some(nick.to_owned()), //use the name of the account for the twitch bot
@@ -32,5 +32,5 @@ fn main() {
                 client.send_privmsg(&channel, "I am afraid i can't do that Jon.").unwrap();
             }
         }
-    }).unwrap();
+    }).unwrap(); */
 }
