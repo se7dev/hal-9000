@@ -12,14 +12,14 @@ services:
     env_file:
       - .env
     depends_on:
-      - mongodb
-    entrypoint: ["cargo", "watch", "-x", run]
+      - database
+    entrypoint: ["cargo", "watch", "-x", "test -- --nocapture", "-x", "run"]
     links:
-        - "mongodb"
+      - "database:mongo"
 
-  mongodb:
+  database:
     image: mongo:latest
-    container_name: mongodb
+    container_name: database
     env_file:
       - .env
     ports:
