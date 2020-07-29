@@ -4,12 +4,7 @@ version = "0.1.0"
 authors = ["Robin und Sebastian"]
 edition = "2018"
 default-run = "database"
-feature = "macros"
-[features]
-default = ["tokio-runtime"]
-tokio-runtime = ["tokio/dns", "tokio/macros", "tokio/rt-core", "tokio/tcp", "tokio/rt-threaded", "tokio/time"]
-async-std-runtime = ["async-std", "async-std/attributes"]
-sync = ["async-std-runtime"]
+
 [[bin]]
 name="hal_9000"
 path="src/main.rs"
@@ -25,11 +20,4 @@ futures = "0.3.5"
 tokio = "0.2.22"
 chrono = "0.4.13"
 
-[dependencies.async-std]
-version = "1.6.2"
-optional = true
-
-[dev-dependencies]
-tokio-test = "0.2.1"
-async-std = "1.6.2"
 
