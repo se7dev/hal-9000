@@ -5,6 +5,7 @@ services:
       dockerfile: .docker/bot.Dockerfile
       context: .
     container_name: rust_bot
+    restart: always
     volumes:
       - ./src:/usr/app/src
       - ./Cargo.toml:/usr/app/Cargo.toml
