@@ -13,8 +13,8 @@ static POOL_SIZE: usize = 8;
 pub struct MainController {
     pub client: IrcClient,
     pub vote_controller: VoteController,
-    pub filter: Filter,
     pub giveaway_controller: GiveawayController,
+    pub filter: Filter,
 }
 
 impl MainController {
@@ -26,8 +26,8 @@ impl MainController {
         MainController {
             client,
             vote_controller,
-            filter,
             giveaway_controller,
+            filter,
         }
     }
     pub fn init(&self) {}
@@ -77,11 +77,10 @@ impl MainController {
                     println!("Ending giveaway!");
                     let user = self.giveaway_controller.choose_user();
                     self.giveaway_controller.stop_giveaway();
-                    send_client.send_privmsg(&channel, user);
+                    send_client.send_privmsg(&channel, "Giveaway has ended");
                 }
                 if ENTERGIVEAWAY.is_match(&message) {
                     println!("Entering giveaway!");
-                    println!("{}", message);
                     self.giveaway_controller.add_user(message);
                     send_client.send_privmsg(&channel, "Entered giveaway");
                 }
