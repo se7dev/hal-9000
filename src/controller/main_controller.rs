@@ -4,7 +4,7 @@ use irc::client::prelude::Config;
 use irc::client::{IrcClient, Client};
 use crate::controller::vote_controller::VoteController;
 use std::collections::HashMap;
-use crate::util::regex_commands::{COMMAND, STARTVOTE, ENDVOTE, PING, VOTE, STARTGIVEAWAY, ENDGIVEAWAY, ENTERGIVEAWAY};
+use crate::util::regex::{COMMAND, STARTVOTE, ENDVOTE, PING, VOTE, STARTGIVEAWAY, ENDGIVEAWAY, ENTERGIVEAWAY};
 use crate::controller::giveaway_controller::GiveawayController;
 use crate::controller::filter::Filter;
 
