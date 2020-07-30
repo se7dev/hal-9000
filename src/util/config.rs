@@ -22,3 +22,7 @@ pub fn eval_config() -> Config {
     };
     return cfg;
 }
+
+pub fn get_lang() -> String {
+    return env::var("LANG").unwrap();
+}

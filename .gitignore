@@ -13,3 +13,4 @@ Cargo.lock
 
 .env
 mongo-init.js
+mongo-volume/
