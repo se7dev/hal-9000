@@ -1,1 +1,2 @@
-pub mod regex_commands;
+pub mod regex;
+pub mod config;
