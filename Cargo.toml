@@ -13,7 +13,7 @@ name="database"
 path="src/model/database.rs"
 [[bin]]
 name = "filter"
-path = "src/controller/filter_controller.rs"
+path = "src/controller/filter.rs"
 [dependencies]
 log = "0.4.8"
 simple_logger = "1.6.0"
