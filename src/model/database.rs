@@ -30,7 +30,7 @@ impl Message {
 
 /// Logs hols multiple Messages in a Vector
 #[derive(Clone, Debug)]
-struct Logs {
+pub struct Logs {
     messages: Vec<Message>,
 }
 
