@@ -4,7 +4,7 @@ use irc::client::prelude::Config;
 use irc::client::{IrcClient, Client};
 use crate::controller::vote_controller::VoteController;
 use std::collections::HashMap;
-use crate::util::regex_commands::{COMMAND, STARTVOTE, ENDVOTE, PING};
+use crate::util::regex_commands::{COMMAND, STARTVOTE, ENDVOTE, PING, VOTE};
 
 static POOL_SIZE: usize = 8;
 
@@ -16,7 +16,7 @@ pub struct MainController {
 impl MainController {
     pub fn new(config: Config) -> MainController {
         let client = IrcClient::from_config(config).unwrap();
-        let vote_controller = VoteController { votes: None };
+        let vote_controller = VoteController::new();
         MainController {
             client,
             vote_controller,
@@ -39,10 +39,16 @@ impl MainController {
                         println!("Cant send message")
                     }
                 }
+                if VOTE.is_match(&message) {
+                    println!("Adding vote");
+                    self.vote_controller.add(&message);
+                    println!("{:?}", self.vote_controller);
+                    send_client.send_privmsg(&channel, "Vote started");
+                }
                 if STARTVOTE.is_match(&message) {
                     println!("Starting vote");
-                    let options = HashMap::new();
-                    self.vote_controller.start_vote(options);
+                    self.vote_controller.start_vote(&message);
+                    println!("{:?}", self.vote_controller);
                     send_client.send_privmsg(&channel, "Vote started");
                 }
                 if ENDVOTE.is_match(&message) {

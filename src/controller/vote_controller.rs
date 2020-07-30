@@ -3,75 +3,77 @@ use std::iter::FromIterator;
 use crate::controller::main_controller::MainController;
 use irc::client::Client;
 
-#[derive(Clone)]
-pub struct Votes {
-    pub vote_options: HashMap<String, i32>,
-}
-
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct VoteController {
-    pub votes: Option<Votes>,
+    pub votes: HashMap<String, i32>
 }
 
-pub fn get_vote_item(msg: &'static String) -> Vec<&'static str> {
+pub fn get_vote_item(msg: &str) -> Vec<&str> {
     let mut split = msg.split(" ");
-    return split.collect::<Vec<&str>>();
+    let options = split.collect::<Vec<&str>>();
+    println!("{:?}", options);
+    return options[1..].to_vec();
 }
 
 impl VoteController {
-    pub fn add(&self, vote: &'static String) {
-        match &self.votes {
-            Some(votes) => {
-                let eval_vote = get_vote_item(&vote).first().unwrap().to_owned().to_owned();
-                if self.check_if_valid(&eval_vote) {
-                    let (_, val) = votes.vote_options.get_key_value(&eval_vote).unwrap();
-                    let mut tmp = votes.vote_options.clone();
-                    tmp.insert(eval_vote, val + 1);
-                }
-            }
-            None => { println!("Vote not active") }
+    pub fn new() -> VoteController {
+        VoteController {
+            votes: HashMap::new()
         }
     }
-    // pub fn remove(&mut self, vote: String) {
-    //     match &self.votes {
-    //         Some(mut votes) => { votes.vote_options.retain(|v| &vote != v) }
-    //         None => { println!("Vote not active") }
-    //     }
-    // }
-    pub fn start_vote(&mut self, mut vote_options: HashMap<String, i32>) {
-        self.votes = Option::from(Votes {
-            vote_options,
-        })
-    }
-    pub fn close_and_eval(&self) -> String {
-        return match &self.votes {
-            Some(votes) => {
-                let mut result: Vec<(&String, &i32)> = Vec::from_iter(&votes.vote_options);
-                result.sort_by(|&(_, a), &(_, b)| b.cmp(&a));
-                result_string_builder(result)
+
+    pub fn add(&mut self, vote_msg: &str) {
+        if self.votes.len() > 0 {
+            let eval_vote: String = get_vote_item(&vote_msg).first().unwrap().to_owned().to_owned();
+            println!("{}", eval_vote);
+            if self.check_if_valid(&eval_vote) {
+                println!("passed");
+                let (_, val) = self.votes.get_key_value(&eval_vote).unwrap();
+                self.votes.insert(eval_vote, val + 1);
+            } else {
+                println!("No a valid entry")
             }
-            None => { "Vote not active".to_string() }
-        };
+        } else {
+            println!("Vote not active");
+        }
     }
-    pub fn check_if_valid(&self, key: &String) -> bool {
-        return match &self.votes {
-            Some(votes) => {
-                let test: &str = &key;
-                if (votes.vote_options.contains_key(test)) {
-                    return true;
-                }
-                return false;
-            }
-            None => { false }
-        };
+
+
+    pub fn start_vote(&mut self, msg: &str) {
+        let vote_items = get_vote_item(msg);
+        let options: HashMap<String, i32> = vote_items
+            .into_iter()
+            .fold(HashMap::new(), |mut acc, test| {
+                acc.insert(test.to_owned(), 0);
+                acc
+            });
+        self.votes = options
+    }
+
+    pub fn close_and_eval(&mut self) -> String {
+        let test = self.votes.clone();
+        let mut result: Vec<(String, i32)> = Vec::from_iter(test.into_iter());
+        result.sort_by(|&(_, a), &(_, b)| b.cmp(&a));
+        println!("{:?}", result);
+        self.votes = HashMap::new();
+        result_string_builder(result)
+    }
+
+
+    pub fn check_if_valid(&self, key: &str) -> bool {
+        if self.votes.contains_key(key) {
+            return true;
+        }
+        return false;
     }
 }
 
-fn result_string_builder(result: Vec<(&String, &i32)>) -> String {
+
+fn result_string_builder(result: Vec<(String, i32)>) -> String {
     let mut string = Vec::<String>::new();
-    string.push("Vote ist closed the Results are: \n".to_string());
-    for elem in result {
-        string.push(format!("Option:{} has {} votes \n", elem.0, elem.1));
+    string.push("Vote ist closed.".to_string());
+    for (key, val) in result {
+        string.push(format!("|{} has {} votes|", key, val));
     }
     return string.join("");
 }
