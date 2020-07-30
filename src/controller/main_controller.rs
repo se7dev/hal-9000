@@ -4,22 +4,26 @@ use irc::client::prelude::Config;
 use irc::client::{IrcClient, Client};
 use crate::controller::vote_controller::VoteController;
 use std::collections::HashMap;
-use crate::util::regex_commands::{COMMAND, STARTVOTE, ENDVOTE, PING, VOTE};
+use crate::util::regex_commands::{COMMAND, STARTVOTE, ENDVOTE, PING, VOTE, STARTGIVEAWAY, ENDGIVEAWAY, ENTERGIVEAWAY};
+use crate::controller::giveaway_controller::GiveawayController;
 
 static POOL_SIZE: usize = 8;
 
 pub struct MainController {
     pub client: IrcClient,
     pub vote_controller: VoteController,
+    pub giveaway_controller: GiveawayController,
 }
 
 impl MainController {
     pub fn new(config: Config) -> MainController {
         let client = IrcClient::from_config(config).unwrap();
         let vote_controller = VoteController::new();
+        let giveaway_controller = GiveawayController::new();
         MainController {
             client,
             vote_controller,
+            giveaway_controller
         }
     }
     pub fn init(&self) {}
@@ -55,6 +59,22 @@ impl MainController {
                     println!("Ending vote!");
                     let result = self.vote_controller.close_and_eval();
                     send_client.send_privmsg(&channel, result);
+                }
+                if STARTGIVEAWAY.is_match(&message) {
+                    println!("Starting giveaway!");
+                    self.giveaway_controller.start_giveaway();
+                    send_client.send_privmsg(&channel, "Giveaway started");
+                }
+                if ENDGIVEAWAY.is_match(&message) {
+                    println!("Ending giveaway!");
+                    let user = self.giveaway_controller.choose_user();
+                    self.giveaway_controller.stop_giveaway();
+                    send_client.send_privmsg(&channel, "Giveaway has ended");
+                }
+                if ENTERGIVEAWAY.is_match(&message) {
+                    println!("Entering giveaway!");
+                    self.giveaway_controller.add_user(message);
+                    send_client.send_privmsg(&channel, "Entered giveaway");
                 }
             }
         }).unwrap()
