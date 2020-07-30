@@ -14,7 +14,7 @@ services:
       - .env
     depends_on:
       - database
-    entrypoint: ["cargo", "watch", "-x", "test -- --nocapture", "-x", "run"]
+    entrypoint: ["cargo", "watch", "-x", "run"]
     links:
       - "database:mongo"
 
@@ -27,7 +27,7 @@ services:
       - 27017:27017
     volumes:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-      - ./mongo-volume:/data/db
+      - mongodb_data:/data/db
 
 volumes:
   mongodb_data:

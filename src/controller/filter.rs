@@ -5,7 +5,7 @@ use serde_json::Value;
 /// # Filter
 /// **Filter** is a struct that holds a Hashset insults which represent words that should be filtered out
 pub struct Filter {
-    insults: HashSet<String>
+    pub insults: HashSet<String>
 }
 
 impl Filter {
@@ -13,7 +13,7 @@ impl Filter {
     /// Sets up the Filter with a dictionary.
     /// Currently, there exists a (minimal) englisch dic, and a german dic for insults.
     /// Dictionaries are saved as a JSON in the form "insults" : [your_insults, ...].
-    fn init_filter(language: &str) -> Filter {
+    pub fn new(language: &str) -> Filter {
         // init filter
         let mut filter = Filter { insults: HashSet::new() };
         // Read JSON to String
@@ -21,9 +21,9 @@ impl Filter {
         // Choose language
         let mut f;
         if language == "English" || language == "Englisch" {
-            f = File::open("./src/controller/dictionary_en.json").expect("Unable to open file");
+            f = File::open("./src/data/dictionary_en.json").expect("Unable to open file");
         } else if language == "German" || language == "Deutsch" {
-            f = File::open("./src/controller/dictionary_de.json").expect("Unable to open file");
+            f = File::open("./src/data/dictionary_de.json").expect("Unable to open file");
         } else {
             return filter;
         }
@@ -42,7 +42,7 @@ impl Filter {
     }
     /// # contains_insult()
     /// Checks passed messages for any insults.
-    pub fn contains_insult(&self, message: String) -> bool {
+    pub fn contains_insult(&self, message: &String) -> bool {
         let mut contains_insult = false;
         // split message into substrings for each word in sentence
         let words = message.split(" ");
@@ -57,62 +57,59 @@ impl Filter {
     }
 }
 
-fn main() {}
-
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_filter_loading_dic_is_there() {
-        let mut filter = Filter::init_filter("English");
+        let mut filter = Filter::new("English");
         assert_eq!(filter.insults.is_empty(), false);
         filter.insults.clear();
         assert_eq!(filter.insults.is_empty(), true);
-        filter = Filter::init_filter("Englisch");
+        filter = Filter::new("Englisch");
         assert_eq!(filter.insults.is_empty(), false);
         filter.insults.clear();
         assert_eq!(filter.insults.is_empty(), true);
-        filter = Filter::init_filter("German");
+        filter = Filter::new("German");
         assert_eq!(filter.insults.is_empty(), false);
         filter.insults.clear();
         assert_eq!(filter.insults.is_empty(), true);
-        filter = Filter::init_filter("Deutsch");
+        filter = Filter::new("Deutsch");
         assert_eq!(filter.insults.is_empty(), false);
     }
 
     #[test]
     fn test_filter_loading_dic_is_absent() {
-        let filter = Filter::init_filter("Aksdjn");
+        let filter = Filter::new("Aksdjn");
         assert_eq!(filter.insults.is_empty(), true);
     }
 
     #[test]
     fn test_filter_english() {
-        let filter = Filter::init_filter("English");
-        let mut is_insult = filter.contains_insult("This is Bullshit".to_string());
+        let filter = Filter::new("English");
+        let mut is_insult = filter.contains_insult(&"This is Bullshit".to_string());
         assert_eq!(is_insult, true);
-        is_insult = filter.contains_insult("This is nice".to_string(),);
+        is_insult = filter.contains_insult(&"This is nice".to_string(),);
         assert_eq!(is_insult, false)
     }
 
     #[test]
     fn test_filter_german() {
-        let filter = Filter::init_filter("Deutsch");
-        let mut is_insult = filter.contains_insult("This is Scheiße".to_string());
+        let filter = Filter::new("Deutsch");
+        let mut is_insult = filter.contains_insult(&"This is Scheiße".to_string());
         assert_eq!(is_insult, true);
-        is_insult = filter.contains_insult("This is nice".to_string());
+        is_insult = filter.contains_insult(&"This is nice".to_string());
         assert_eq!(is_insult, false)
     }
 
     #[test]
     fn test_filter_is_case_insensitive() {
-        let mut filter = Filter::init_filter("Deutsch");
-        let mut is_insult = filter.contains_insult("This is scheiße".to_string());
+        let mut filter = Filter::new("Deutsch");
+        let mut is_insult = filter.contains_insult(&"This is scheiße".to_string());
         assert_eq!(is_insult, true);
-        filter = Filter::init_filter("English");
-        is_insult = filter.contains_insult("This is bulLshiT".to_string());
+        filter = Filter::new("English");
+        is_insult = filter.contains_insult(&"This is bulLshiT".to_string());
         assert_eq!(is_insult, true);
     }
 }
