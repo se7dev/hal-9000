@@ -12,19 +12,21 @@ services:
     env_file:
       - .env
     depends_on:
-      - mongodb
-    entrypoint: ["cargo", "watch", "-x", run]
+      - database
+    entrypoint: ["cargo", "watch", "-x", "test -- --nocapture", "-x", "run"]
+    links:
+      - "database:mongo"
 
-  mongodb:
+  database:
     image: mongo:latest
-    container_name: mongodb
+    container_name: database
     env_file:
       - .env
     ports:
       - 27017:27017
     volumes:
-      - mongodb_data:/data/db
-      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+      - ./mongo-volume:/data/db
 
 volumes:
   mongodb_data:
