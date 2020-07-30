@@ -23,11 +23,9 @@ impl GiveawayController {
     }
     pub fn add_user(&mut self, user: String) {
         if self.giveaway_running {
-            let re = Regex::new(r"#\w*").unwrap();
-            for matched_expression in re.captures_iter(user.as_str()) {
-                let user = &matched_expression[0].replace("#", "");
-                let _boo = self.users.insert(String::from(user));
-            }
+            let mut enter = user.split_whitespace();
+            let usr = enter.collect::<Vec<_>>();
+            let _boo = self.users.insert(String::from(usr[1]));
         }
     }
     pub fn choose_user(&self) -> String {
@@ -57,7 +55,7 @@ mod tests {
     fn users_from_chat_in_users() {
         let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
         users.add_user(String::from(
-            ":rowe90!rowe90@rowe90.tmi.twitch.tv PRIVMSG #rowe90 :test"));
+            "!giveawayenter rowe90"));
         assert!(users.users.contains("rowe90"));
     }
 
