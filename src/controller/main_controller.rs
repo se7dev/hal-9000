@@ -76,7 +76,7 @@ impl MainController {
                     println!("Ending giveaway!");
                     let user = self.giveaway_controller.choose_user();
                     self.giveaway_controller.stop_giveaway();
-                    send_client.send_privmsg(&channel, "Giveaway has ended");
+                    send_client.send_privmsg(&channel, user);
                 }
                 if ENTERGIVEAWAY.is_match(&message) {
                     println!("Entering giveaway!");
