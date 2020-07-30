@@ -6,6 +6,7 @@ use crate::controller::vote_controller::VoteController;
 use std::collections::HashMap;
 use crate::util::regex::{COMMAND, STARTVOTE, ENDVOTE, PING, VOTE, STARTGIVEAWAY, ENDGIVEAWAY, ENTERGIVEAWAY};
 use crate::controller::giveaway_controller::GiveawayController;
+
 use crate::controller::filter::Filter;
 
 static POOL_SIZE: usize = 8;
@@ -30,8 +31,6 @@ impl MainController {
             filter,
         }
     }
-    pub fn init(&self) {}
-
     pub fn listen(&mut self) {
         let recv_client = self.client.clone();
         let send_client = self.client.clone();
@@ -83,6 +82,7 @@ impl MainController {
                     println!("Entering giveaway!");
                     self.giveaway_controller.add_user(message);
                     send_client.send_privmsg(&channel, "Entered giveaway");
+
                 }
             }
         }).unwrap()

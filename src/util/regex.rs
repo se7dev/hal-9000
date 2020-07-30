@@ -10,5 +10,6 @@ pub static ref ENDVOTE: Regex = Regex::new(r"^!voteend$").unwrap();
 pub static ref STARTGIVEAWAY: Regex = Regex::new(r"^!giveawaystart.*$").unwrap();
 pub static ref ENDGIVEAWAY: Regex = Regex::new(r"^!giveawayend.*$").unwrap();
 pub static ref ENTERGIVEAWAY: Regex = Regex::new(r"^!giveawayenter.*$").unwrap();
+
 }
 
