@@ -1,7 +1,6 @@
 use std::collections::{HashSet};
 use std::fs::File;
 use std::io::Read;
-use std::env;
 use serde_json::Value;
 /// # Filter
 /// **Filter** is a struct that holds a Hashset insults which represent words that should be filtered out

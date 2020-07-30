@@ -11,6 +11,7 @@ use mongodb::{
     Client,
 };
 use std::borrow::Borrow;
+// TODO: Make structs accessible from other packages
 
 /// A Message must have a message, a user that sent the message and a timestamp (DD-MM-YY)
 #[derive(Clone, Debug)]
@@ -46,7 +47,7 @@ fn build_date() -> String {
 }
 
 /// get_logs() fetches all messages that have been sent on a specific date
-async fn get_logs(date: String) -> Result<Logs> {
+pub async fn get_logs(date: String) -> Result<Logs> {
     let mut logs = Logs {
         messages: Vec::new(),
     };
@@ -82,7 +83,7 @@ async fn get_logs(date: String) -> Result<Logs> {
 }
 
 /// write_logs() writes the collected messages into the database
-async fn write_logs(logs: Logs) -> Result<String> {
+pub async fn write_logs(logs: Logs) -> Result<String> {
     let client = Client::with_uri_str("mongodb://root:root@database:27017/").await?;
     let db = client.database("logs");
     let time = build_date();
