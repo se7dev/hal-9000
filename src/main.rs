@@ -12,6 +12,6 @@ use controller::main_controller::MainController;
 
 fn main() {
     let client_config: Config = eval_config();
-    let main_controller: MainController = MainController::new(client_config);
-    main_controller.start()
+    let mut main_controller: MainController = MainController::new(client_config);
+    main_controller.listen()
 }
