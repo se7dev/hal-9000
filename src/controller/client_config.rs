@@ -11,8 +11,6 @@ pub fn eval_config() -> Config {
         .split_whitespace()
         .map(|s| s.to_string())
         .collect::<Vec<String>>();
-    let test = vec!["#sleizer".to_owned()];
-    println!("{:?}{:?}", channels, test);
 
     let cfg = Config {
         nickname: Some(nick.to_owned()),

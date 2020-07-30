@@ -59,7 +59,7 @@ impl MainController {
                     println!("Ending vote!");
                     let result = self.vote_controller.close_and_eval();
                     send_client.send_privmsg(&channel, result);
-                }
+                }/*
                 if STARTGIVEAWAY.is_match(&message) {
                     println!("Starting giveaway!");
                     self.giveaway_controller.start_giveaway();
@@ -75,7 +75,7 @@ impl MainController {
                     println!("Entering giveaway!");
                     self.giveaway_controller.add_user(message);
                     send_client.send_privmsg(&channel, "Entered giveaway");
-                }
+                }*/
             }
         }).unwrap()
     }
