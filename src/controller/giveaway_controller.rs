@@ -61,12 +61,12 @@ impl GiveawayController {
         self.users.clear();
     }
     /// Adds users to the price pool.
-    /// # Example
-    /// ```
-    /// let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
-    /// users.add_user("!giveawayenter user");
-    /// assert!(users.users.contains("user"));
-    /// ```
+  /// # Example
+  /// ```
+  /// let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
+  /// users.add_user("!giveawayenter user");
+  /// assert!(users.users.contains("user"));
+  /// ```
     pub fn add_user(&mut self, user: &String) {
         if self.giveaway_running {
             let mut enter = user.split_whitespace();
@@ -122,7 +122,7 @@ mod tests {
         let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
         users.add_user(&String::from("!giveawayenter basti"));
         users.add_user(&String::from("!giveawayenter robin"));
-        users.add_user(&String::from("!giveawayenter ralph"));
+        users.add_user(&String::from("!giveawayenter ralph"));       let _chosen = users.choose_user();
         let chosen = users.choose_user();
         assert!(!chosen.is_empty());
     }
