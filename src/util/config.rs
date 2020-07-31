@@ -25,7 +25,7 @@ pub fn eval_config() -> Config {
     };
     return cfg;
 }
-
+/// Builds and returns ClientOptions based on config keys stored in .env
 pub fn get_db_config() -> ClientOptions {
     // ("mongodb://root:root@database:27017/")
     let username: Option<String> = Option::from(env::var("MONGO_INITDB_ROOT_USERNAME").unwrap());

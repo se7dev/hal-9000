@@ -23,13 +23,16 @@ impl Message {
         Message { message, timestamp }
     }
 }
-
+/// Sets up a connection to the MongoDB Database holding the logs.
 pub struct DatabaseConnector {
     client: Client,
     database_name: String,
 }
 
 impl DatabaseConnector {
+    /// Instantiates a new Database connector.
+    ///
+    /// It's using a **config** for connection information.
     pub async fn new(config: ClientOptions) -> DatabaseConnector {
         let database_name = config.credential.clone().unwrap().source.unwrap();
         let client = Client::with_options(config);
