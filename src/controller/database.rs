@@ -1,7 +1,4 @@
 #![allow(warnings)]
-extern crate mongodb;
-extern crate tokio;
-
 
 use chrono::{Datelike, Utc};
 use futures::stream::StreamExt;
@@ -11,20 +8,94 @@ use mongodb::{
     Client,
 };
 use std::borrow::Borrow;
+use mongodb::options::ClientOptions;
 // TODO: Make structs accessible from other packages
 
 /// A Message must have a message, a user that sent the message and a timestamp (DD-MM-YY)
 #[derive(Clone, Debug)]
 struct Message {
     message: String,
-    user: String,
     timestamp: String,
 }
 
 /// new_message simply constructs a new Message
 impl Message {
-    fn new_message(message: String, user: String, timestamp: String) -> Message {
-        Message { message, user, timestamp }
+    fn new_message(message: String, timestamp: String) -> Message {
+        Message { message, timestamp }
+    }
+}
+
+pub struct DatabaseConnector {
+    client: Client,
+}
+
+impl DatabaseConnector {
+    pub async fn new(config: String) -> DatabaseConnector {
+        let client = Client::with_uri_str(config.as_str()).await;
+        match client {
+            Ok(client) => {
+                DatabaseConnector {
+                    client
+                }
+            }
+            Err(e) => { panic!("DB not init") }
+        }
+    }
+
+    /// get_logs() fetches all messages that have been sent on a specific date
+    pub async fn get_logs(&self, date: String) -> Result<Logs> {
+        let mut logs = Logs {
+            messages: Vec::new(),
+        };
+
+        // Create the client by passing in a MongoDB connection string.
+        // let client = Client::with_uri_str("mongodb://root:root@database:27017/").await?;
+        // Get a handle to the db and collection being used.
+        let db = self.client.database("logs");
+        let coll = db.collection(&date);
+
+        // Query the database for all messages which are on that date.
+        let mut cursor = coll.find(doc! {"timestamp": date.to_string()}, None).await?;
+        // Iterate over each document in the cursor, using serde to
+        // deserialize them into Messages.
+        while let Some(result) = cursor.next().await {
+            match result {
+                Ok(document) => {
+                    if let (Some(message), Some(timestamp)) =
+                    (document.get("message").and_then(Bson::as_str),
+                     document.get("timestamp").and_then(Bson::as_str)) {
+                        logs.messages.push(
+                            Message::new_message(
+                                message.to_string(),
+                                timestamp.to_string()))
+                    }
+                }
+                Err(e) => return Err(e.into()),
+            }
+        }
+        return Ok(logs);
+    }
+
+    /// write_logs() writes the collected messages into the database
+    pub async fn write_logs(&self, msg: &str) -> Result<String> {
+        println!("DB write");
+        let db = self.client.database("logs");
+        println!("{:?}", db);
+        let time = build_date();
+
+        let coll = db.collection(time.as_str());
+        println!("{:?}", coll);
+
+        let result = coll.insert_one(
+            doc! {
+                "message": "blub",
+                  "timestamp" : "blah"},
+            None,
+        ).await;
+        println!("This was something");
+        println!("{:?}", result);
+        // Insert the document into the database.
+        return Ok("Ok".to_owned());
     }
 }
 
@@ -46,68 +117,6 @@ fn build_date() -> String {
     return time;
 }
 
-/// get_logs() fetches all messages that have been sent on a specific date
-pub async fn get_logs(date: String) -> Result<Logs> {
-    let mut logs = Logs {
-        messages: Vec::new(),
-    };
-
-    // Create the client by passing in a MongoDB connection string.
-    let client = Client::with_uri_str("mongodb://root:root@database:27017/").await?;
-    // Get a handle to the db and collection being used.
-    let db = client.database("logs");
-    let coll = db.collection(&date);
-
-    // Query the database for all messages which are on that date.
-    let mut cursor = coll.find(doc! {"timestamp": date.to_string()}, None).await?;
-    // Iterate over each document in the cursor, using serde to
-    // deserialize them into Messages.
-    while let Some(result) = cursor.next().await {
-        match result {
-            Ok(document) => {
-                if let (Some(message), Some(user), Some(timestamp)) =
-                (document.get("message").and_then(Bson::as_str),
-                 document.get("user").and_then(Bson::as_str),
-                 document.get("timestamp").and_then(Bson::as_str)) {
-                    logs.messages.push(
-                        Message::new_message(
-                            message.to_string(),
-                            user.to_string(),
-                            timestamp.to_string()))
-                }
-            }
-            Err(e) => return Err(e.into()),
-        }
-    }
-    return Ok(logs);
-}
-
-/// write_logs() writes the collected messages into the database
-pub async fn write_logs(logs: Logs) -> Result<String> {
-    let client = Client::with_uri_str("mongodb://root:root@database:27017/").await?;
-    let db = client.database("logs");
-    let time = build_date();
-    println!("{:?}", logs);
-
-    let coll = db.collection(&logs.messages.get(0).unwrap().timestamp );
-    for message in &logs.messages {
-        let temp_message = message.clone();
-        println!("Message: {:?}", temp_message);
-        coll.insert_one(
-            doc! {
-                "message": temp_message.message,
-                 "user": temp_message.user,
-                  "timestamp" : temp_message.timestamp},
-            None,
-        ).await?;
-    }
-
-    // Insert the document into the database.
-    return Ok("Ok".to_owned());
-}
-
-#[tokio::main]
-async fn main() {}
 
 #[cfg(test)]
 mod tests {
@@ -197,12 +206,10 @@ mod tests {
         logs.messages.push(
             Message::new_message(
                 String::from("1"),
-                String::from("InsertedUser1"),
                 String::from("01-01-01")));
         logs.messages.push(
             Message::new_message(
                 String::from("2"),
-                String::from("InsertedUser2"),
                 String::from("01-01-01")));
         write_logs(logs).await;
         let retrieved_logs = get_logs(String::from("01-01-01")).await;

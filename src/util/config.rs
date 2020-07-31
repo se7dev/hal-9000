@@ -23,6 +23,16 @@ pub fn eval_config() -> Config {
     return cfg;
 }
 
+pub fn get_db_config() -> String {
+    // ("mongodb://root:root@database:27017/")
+    let db_user: String = env::var("MONGO_INITDB_ROOT_USERNAME").unwrap();
+    let db_pw: String = env::var("MONGO_INITDB_ROOT_PASSWORD").unwrap();
+    let host_name: String = env::var("MONGO_INITDB_HOSTNAME").unwrap();
+    let db_name: String = env::var("MONGO_INITDB_DATABASE").unwrap();
+    let db_port = 27017;
+    return format!("mongodb://{}:{}@{}:{}/?authSource={}", db_user, db_pw, host_name, db_port, db_name);
+}
+
 pub fn get_lang() -> String {
     return env::var("LANG").unwrap();
 }
