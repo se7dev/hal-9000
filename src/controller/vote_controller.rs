@@ -38,7 +38,6 @@ impl VoteController {
             return "Vote not active";
         }
     }
-
     /// Yet to be documented
     pub fn start_vote(&mut self, msg: &str) -> &str {
         let vote_items = get_cmd_elem(msg);

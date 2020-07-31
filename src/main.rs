@@ -23,9 +23,8 @@ use util::config::get_lang;
 
 #[tokio::main]
 async fn main() {
-    /// Main does 4 things:
+    /// Main does 3 things:
     /// - get language for filter that is defined in .env
-    /// - build a config from defined constants in .env
     /// - instantiate a MainController
     /// - start listening for incoming chat messages
     let lang = get_lang();

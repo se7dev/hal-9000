@@ -122,7 +122,7 @@ mod tests {
         let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
         users.add_user(&String::from("!giveawayenter basti"));
         users.add_user(&String::from("!giveawayenter robin"));
-        users.add_user(&String::from("!giveawayenter ralph"));       let _chosen = users.choose_user();
+        users.add_user(&String::from("!giveawayenter ralph"));
         let chosen = users.choose_user();
         assert!(!chosen.is_empty());
     }
