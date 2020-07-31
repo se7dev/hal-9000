@@ -3,16 +3,36 @@ use std::fs::File;
 use std::io::Read;
 use serde_json::Value;
 /// # Filter
-/// **Filter** is a struct that holds a Hashset insults which represent words that should be filtered out
+/// Filter can filter words from a given string using a JSON dictionary
+/// It holds a Hashset **insults** which represent words that should be filtered out
+///# Example
+/// ```
+/// let filter = Filter::new("English");
+/// let mut is_insult = filter.contains_insult(&"This is Bullshit".to_string());
+/// assert_eq!(is_insult, true);
+/// is_insult = filter.contains_insult(&"This is nice".to_string(),);
+/// assert_eq!(is_insult, false)
+/// ```
 pub struct Filter {
     pub insults: HashSet<String>
 }
 
 impl Filter {
-    /// # init_filter()
     /// Sets up the Filter with a dictionary.
     /// Currently, there exists a (minimal) englisch dic, and a german dic for insults.
-    /// Dictionaries are saved as a JSON in the form "insults" : [your_insults, ...].
+    /// Dictionaries are saved as a JSON in the form
+    /// ```
+    /// {
+    /// "insults" :
+    /// [your_insult_1,
+    /// [your_insult_2,
+    /// ...]
+    /// }
+    /// ```
+    /// # Example
+    /// ```
+    /// let filter = Filter::new("German");
+    /// ```
     pub fn new(language: &str) -> Filter {
         // init filter
         let mut filter = Filter { insults: HashSet::new() };
@@ -40,8 +60,13 @@ impl Filter {
         }
         return filter;
     }
-    /// # contains_insult()
     /// Checks passed messages for any insults.
+    /// # Example
+    /// ```
+    /// let mut filter = Filter::new("Deutsch");
+    /// let mut is_insult = filter.contains_insult(&"Das ist scheiße".to_string());
+    /// assert_eq!(is_insult, true);
+    /// ```
     pub fn contains_insult(&self, message: &String) -> bool {
         let mut contains_insult = false;
         // split message into substrings for each word in sentence
