@@ -16,7 +16,6 @@ use util::config::get_lang;
 #[tokio::main]
 async fn main() {
     let lang = get_lang();
-
     let mut main_controller: MainController = MainController::new(lang);
     main_controller.listen()
 }
