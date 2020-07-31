@@ -1,5 +1,7 @@
 # hal-9000
+![hal-9000](https://live.staticflickr.com/1974/43234531050_c7a7f3ff1f.jpg)
 
+["HAL 9000"](https://www.flickr.com/photos/tomronworldwide/43234531050) by [Ron Frazier](https://www.flickr.com/photos/tomronworldwide/) is licensed under [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/#)
 # Description: 
 This is a chatbot for the streaming platfrom Twitch.tv written in Rust and realized through Docker.
 It offers several features for your chat, including:
