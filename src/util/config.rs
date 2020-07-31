@@ -30,7 +30,7 @@ pub fn get_db_config() -> ClientOptions {
     // ("mongodb://root:root@database:27017/")
     let username: Option<String> = Option::from(env::var("MONGO_INITDB_ROOT_USERNAME").unwrap());
     let password: Option<String> = Option::from(env::var("MONGO_INITDB_ROOT_PASSWORD").unwrap());
-    let source: Option<String> = Option::from(env::var("MONGO_INITDB_ROOT_DATABASE").unwrap());
+    let source: Option<String> = Option::from(env::var("MONGO_INITDB_DATABASE").unwrap());
     let credential = Option::from(Credential {
         username,
         source,
