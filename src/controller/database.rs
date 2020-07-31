@@ -9,7 +9,6 @@ use mongodb::{
 };
 use std::borrow::Borrow;
 use mongodb::options::ClientOptions;
-// TODO: Make structs accessible from other packages
 
 /// A Message must have a message, a user that sent the message and a timestamp (DD-MM-YY)
 #[derive(Clone, Debug)]
@@ -27,15 +26,18 @@ impl Message {
 
 pub struct DatabaseConnector {
     client: Client,
+    database_name: String,
 }
 
 impl DatabaseConnector {
-    pub async fn new(config: String) -> DatabaseConnector {
-        let client = Client::with_uri_str(config.as_str()).await;
+    pub async fn new(config: ClientOptions) -> DatabaseConnector {
+        let database_name = config.credential.clone().unwrap().source.unwrap();
+        let client = Client::with_options(config);
         match client {
             Ok(client) => {
                 DatabaseConnector {
-                    client
+                    client,
+                    database_name,
                 }
             }
             Err(e) => { panic!("DB not init") }
@@ -51,7 +53,7 @@ impl DatabaseConnector {
         // Create the client by passing in a MongoDB connection string.
         // let client = Client::with_uri_str("mongodb://root:root@database:27017/").await?;
         // Get a handle to the db and collection being used.
-        let db = self.client.database("logs");
+        let db = self.client.database(self.database_name.clone().as_str());
         let coll = db.collection(&date);
 
         // Query the database for all messages which are on that date.
@@ -79,17 +81,13 @@ impl DatabaseConnector {
     /// write_logs() writes the collected messages into the database
     pub async fn write_logs(&self, msg: &str) -> Result<String> {
         println!("DB write");
-        let db = self.client.database("logs");
-        println!("{:?}", db);
+        let db = self.client.database(self.database_name.clone().as_str());
         let time = build_date();
-
         let coll = db.collection(time.as_str());
-        println!("{:?}", coll);
-
         let result = coll.insert_one(
             doc! {
-                "message": "blub",
-                  "timestamp" : "blah"},
+                "message": msg,
+                  "timestamp" : time},
             None,
         ).await;
         println!("This was something");

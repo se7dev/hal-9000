@@ -33,7 +33,6 @@ impl MainController {
         let giveaway_controller = GiveawayController::new();
 
         let db_config = get_db_config();
-        println!("{}", db_config);
         let db_connector = block_on(DatabaseConnector::new(db_config));
 
 
