@@ -4,19 +4,25 @@ use crate::controller::main_controller::MainController;
 use irc::client::Client;
 use crate::util::get_item::get_cmd_elem;
 
+/// Manages voting on a channel
+///
+/// Enables voting on starting, ending and voting on multiple items that are chosen by the voting
+/// initiater.
 #[derive(Clone, Debug)]
 pub struct VoteController {
-    pub votes: HashMap<String, i32>
+    pub votes: HashMap<String, i32>,
 }
 
 impl VoteController {
+    /// Instantiates a new VoteController with an empty HashMap
     pub fn new() -> VoteController {
         VoteController {
-            votes: HashMap::new()
+            votes: HashMap::new(),
         }
     }
 
     pub fn add(&mut self, vote_msg: &str) -> &str {
+    /// Yet to be documented
         if self.votes.len() > 0 {
             let eval_vote: String = get_cmd_elem(&vote_msg).first().unwrap().to_owned().to_owned();
             println!("{}", eval_vote);
@@ -33,18 +39,21 @@ impl VoteController {
         }
     }
 
+    /// Yet to be documented
     pub fn start_vote(&mut self, msg: &str) -> &str {
         let vote_items = get_cmd_elem(msg);
-        let options: HashMap<String, i32> = vote_items
-            .into_iter()
-            .fold(HashMap::new(), |mut acc, test| {
-                acc.insert(test.to_owned(), 0);
-                acc
-            });
+        let options: HashMap<String, i32> =
+            vote_items
+                .into_iter()
+                .fold(HashMap::new(), |mut acc, test| {
+                    acc.insert(test.to_owned(), 0);
+                    acc
+                });
         self.votes = options;
         return "Vote started";
     }
 
+    /// Yet to be documented
     pub fn close_and_eval(&mut self) -> String {
         let test = self.votes.clone();
         let mut result: Vec<(String, i32)> = Vec::from_iter(test.into_iter());
@@ -54,6 +63,7 @@ impl VoteController {
         result_string_builder(result)
     }
 
+    /// Yet to be documented
     pub fn check_if_valid(&self, key: &str) -> bool {
         if self.votes.contains_key(key) {
             return true;

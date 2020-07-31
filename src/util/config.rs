@@ -3,6 +3,7 @@ use std::env;
 use mongodb::options::{ClientOptions, StreamAddress, Credential};
 
 
+/// Builds a **Config** from given environment variables saved in .env
 pub fn eval_config() -> Config {
     let oauth_token: String = env::var("TWITCHPW").unwrap();
     let nick: String = env::var("NICKNAME").unwrap();
@@ -50,7 +51,7 @@ pub fn get_db_config() -> ClientOptions {
     client_options.direct_connection = Some(true);
     return client_options;
 }
-
+/// Gets the language defined for Filter from LANG saved in .env
 pub fn get_lang() -> String {
     return env::var("LANG").unwrap();
 }

@@ -12,8 +12,13 @@ use crate::controller::database::DatabaseConnector;
 use crate::util::config::{eval_config, get_db_config};
 use futures::executor::{block_on, LocalPool};
 
-static POOL_SIZE: usize = 8;
-
+/// Manages the calls to the other controllers
+/// as well as communication between the program and Twitch
+///
+/// - **client** manages IRC communication
+/// - **vote_controller** manages votes in the channel
+/// - **giveaway_controller** manages giveaways in the channel
+/// - **filter** detects swear words in messages
 pub struct MainController {
     pub client: IrcClient,
     pub vote_controller: VoteController,
@@ -24,6 +29,14 @@ pub struct MainController {
 
 
 impl MainController {
+    /// Instantiates a new MainController
+    ///
+    /// # Example
+    /// ```
+    /// let lang = get_lang();
+    /// let client_config: Config = eval_config();
+    /// let mut main_controller: MainController = MainController::new(lang, client_config);
+    /// ```
     pub fn new(lang: String) -> MainController {
         let client_config: Config = eval_config();
         let client = IrcClient::from_config(client_config).unwrap();
@@ -44,8 +57,7 @@ impl MainController {
             db_connector,
         }
     }
-
-
+    /// Listens for incoming messages and reacts to them if they match one of the defined patterns
     pub fn listen(&mut self) {
         let recv_client = self.client.clone();
         let send_client = self.client.clone();
@@ -93,7 +105,7 @@ impl MainController {
                             println!("Entering giveaway!");
                             self.giveaway_controller.add_user(message);
                             send_client.send_privmsg(&channel, "Entered giveaway");
-        
+
                         }
                     }
                 }

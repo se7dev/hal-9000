@@ -1,3 +1,11 @@
+//! # hal9000
+//! hal9000 is a chatbot for the streaming platform **Twitch.tv**
+//! # Features
+//! - send and receive messages from a chat on twitch
+//! - react to certain chat commands, e.g. !startgiveaway lets you organize a giveaway for chat
+//! participants
+//! - logging of chat messages in the background
+
 #![allow(warnings)]
 
 mod controller;
@@ -15,6 +23,11 @@ use util::config::get_lang;
 
 #[tokio::main]
 async fn main() {
+    /// Main does 4 things:
+    /// - get language for filter that is defined in .env
+    /// - build a config from defined constants in .env
+    /// - instantiate a MainController
+    /// - start listening for incoming chat messages
     let lang = get_lang();
     let mut main_controller: MainController = MainController::new(lang);
     main_controller.listen()
