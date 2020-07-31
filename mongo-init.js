@@ -1,11 +1,11 @@
 db.createUser(
     {
-        user: "test",
-        pwd: "asdf",
+        user: "admin",
+        pwd: "admin",
         roles: [
             {
                 role: "readWrite",
-                db: "halDB"
+                db: "chatBot"
             }
         ]
     }
