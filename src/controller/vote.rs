@@ -26,8 +26,12 @@ impl VoteController {
     /// If it is valid, only then is it added to the votes.
     pub fn add(&mut self, vote_msg: &str) -> &str {
         let eval_vote: String;
-        return if self.votes.len() > 0 {
-            eval_vote = get_cmd_elem(&vote_msg).first().unwrap().to_owned().to_owned();
+        if self.votes.len() > 0 {
+            eval_vote = get_cmd_elem(&vote_msg)
+                .first()
+                .unwrap()
+                .to_owned()
+                .to_owned();
             debug!("Vote elements are {}", eval_vote);
             if self.check_if_valid(&eval_vote) {
                 // Warning https://github.com/rust-lang/rust/issues/59159
@@ -41,7 +45,7 @@ impl VoteController {
             }
         } else {
             "Vote not active"
-        };
+        }
     }
     /// Starts a motion
     ///
@@ -124,7 +128,10 @@ mod tests {
         vote_controller.add("!vote test1");
         vote_controller.add("!vote test2");
         let result = vote_controller.close_and_eval();
-        assert_eq!(result, "Vote ist closed.|test1 has 2 votes||test2 has 1 votes|");
+        assert_eq!(
+            result,
+            "Vote ist closed.|test1 has 2 votes||test2 has 1 votes|"
+        );
     }
 
     #[test]

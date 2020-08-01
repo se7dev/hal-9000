@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use rand::{Rng, thread_rng};
+use rand::{thread_rng, Rng};
 
 #[derive(Debug)]
 /// # GiveawayController
@@ -63,12 +63,12 @@ impl GiveawayController {
         self.users.clear();
     }
     /// Adds users to the price pool.
-  /// # Example
-  /// ```
-  /// let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
-  /// users.add_user("!giveawayenter user");
-  /// assert!(users.users.contains("user"));
-  /// ```
+    /// # Example
+    /// ```
+    /// let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
+    /// users.add_user("!giveawayenter user");
+    /// assert!(users.users.contains("user"));
+    /// ```
     pub fn add_user(&mut self, user: &String) {
         if self.giveaway_running {
             let enter = user.split_whitespace();
@@ -110,16 +110,21 @@ mod tests {
     #[test]
     // Users should add user when !entry command is called in chat
     fn users_from_chat_in_users() {
-        let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
-        users.add_user(&String::from(
-            "!giveawayenter rowe90"));
+        let mut users = GiveawayController {
+            users: HashSet::new(),
+            giveaway_running: true,
+        };
+        users.add_user(&String::from("!giveawayenter rowe90"));
         assert!(users.users.contains("rowe90"));
     }
 
     #[test]
     // Users should choose a random User from list of Users
     fn choose_random_user() {
-        let mut users = GiveawayController { users: HashSet::new(), giveaway_running: true };
+        let mut users = GiveawayController {
+            users: HashSet::new(),
+            giveaway_running: true,
+        };
         users.add_user(&String::from("!giveawayenter basti"));
         users.add_user(&String::from("!giveawayenter robin"));
         users.add_user(&String::from("!giveawayenter ralph"));
@@ -130,7 +135,10 @@ mod tests {
     #[test]
     // Users should choose a random User from list of Users
     fn no_user_for_giveaway() {
-        let users = GiveawayController { users: HashSet::new(), giveaway_running: true };
+        let users = GiveawayController {
+            users: HashSet::new(),
+            giveaway_running: true,
+        };
         let chosen = users.choose_user();
         assert_eq!(chosen, "Nobody entered the giveaway");
     }
@@ -138,9 +146,15 @@ mod tests {
     #[test]
     // Users should choose a random User from list of Users
     fn dont_add_users_when_no_giveaway_running() {
-        let mut users = GiveawayController { users: HashSet::new(), giveaway_running: false };
+        let mut users = GiveawayController {
+            users: HashSet::new(),
+            giveaway_running: false,
+        };
         users.add_user(&String::from("!giveawayenter basti"));
         let chosen = users.choose_user();
-        assert_eq!(chosen, "No giveaway running at the moment. Check back later.");
+        assert_eq!(
+            chosen,
+            "No giveaway running at the moment. Check back later."
+        );
     }
 }

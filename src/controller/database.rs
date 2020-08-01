@@ -1,11 +1,11 @@
 use chrono::{Datelike, Utc};
 use futures::stream::StreamExt;
-use mongodb::{
-    bson::{Bson, doc},
-    Client,
-    error::Result,
-};
 use mongodb::options::ClientOptions;
+use mongodb::{
+    bson::{doc, Bson},
+    error::Result,
+    Client,
+};
 
 /// A Message must have a message, a user that sent the message and a timestamp (DD-MM-YY)
 #[derive(Clone, Debug)]
@@ -37,13 +37,11 @@ impl DatabaseConnector {
         let database_name = config.credential.clone().unwrap().source.unwrap();
         let client = Client::with_options(config);
         match client {
-            Ok(client) => {
-                DatabaseConnector {
-                    client,
-                    database_name,
-                }
-            }
-            Err(_e) => { panic!("DB could not initiated") }
+            Ok(client) => DatabaseConnector {
+                client,
+                database_name,
+            },
+            Err(_e) => panic!("DB could not initiated"),
         }
     }
     #[allow(dead_code)]
@@ -60,19 +58,22 @@ impl DatabaseConnector {
         let coll = db.collection(&date);
 
         // Query the database for all messages which are on that date.
-        let mut cursor = coll.find(doc! {"timestamp": date.to_string()}, None).await?;
+        let mut cursor = coll
+            .find(doc! {"timestamp": date.to_string()}, None)
+            .await?;
         // Iterate over each document in the cursor, using serde to
         // deserialize them into Messages.
         while let Some(result) = cursor.next().await {
             match result {
                 Ok(document) => {
-                    if let (Some(message), Some(timestamp)) =
-                    (document.get("message").and_then(Bson::as_str),
-                     document.get("timestamp").and_then(Bson::as_str)) {
-                        logs.messages.push(
-                            Message::new_message(
-                                message.to_string(),
-                                timestamp.to_string()))
+                    if let (Some(message), Some(timestamp)) = (
+                        document.get("message").and_then(Bson::as_str),
+                        document.get("timestamp").and_then(Bson::as_str),
+                    ) {
+                        logs.messages.push(Message::new_message(
+                            message.to_string(),
+                            timestamp.to_string(),
+                        ))
                     }
                 }
                 Err(e) => return Err(e.into()),
@@ -87,12 +88,17 @@ impl DatabaseConnector {
         let db = self.client.database(self.database_name.clone().as_str());
         let time = build_date();
         let coll = db.collection(time.as_str());
-        if let Err(e) = coll.insert_one(
-            doc! {
+        if let Err(e) = coll
+            .insert_one(
+                doc! {
                 "message": msg,
                   "timestamp" : time},
-            None,
-        ).await { error!("Could not write db entry {:#?}", e) }
+                None,
+            )
+            .await
+        {
+            error!("Could not write db entry {:#?}", e)
+        }
 
         // Insert the document into the database.
         return Ok("Ok".to_owned());

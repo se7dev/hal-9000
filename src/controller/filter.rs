@@ -17,7 +17,7 @@ use serde_json::Value;
 /// assert_eq!(is_insult, false)
 /// ```
 pub struct Filter {
-    pub insults: HashSet<String>
+    pub insults: HashSet<String>,
 }
 
 impl Filter {
@@ -39,7 +39,9 @@ impl Filter {
     pub fn new(language: &str) -> Filter {
         // init filter
         info!("Initiating filter");
-        let mut filter = Filter { insults: HashSet::new() };
+        let mut filter = Filter {
+            insults: HashSet::new(),
+        };
         // Read JSON to String
         let mut data = String::new();
         // Choose language
@@ -58,7 +60,9 @@ impl Filter {
         for (_key, values) in obj.iter() {
             for value in values.as_array() {
                 for val in value {
-                    filter.insults.insert(val.as_str().unwrap().to_string().to_uppercase());
+                    filter
+                        .insults
+                        .insert(val.as_str().unwrap().to_string().to_uppercase());
                 }
             }
         }
@@ -119,7 +123,7 @@ mod tests {
         let filter = Filter::new("English");
         let mut is_insult = filter.contains_insult(&"This is Bullshit".to_string());
         assert_eq!(is_insult, true);
-        is_insult = filter.contains_insult(&"This is nice".to_string(),);
+        is_insult = filter.contains_insult(&"This is nice".to_string());
         assert_eq!(is_insult, false)
     }
 
@@ -142,4 +146,3 @@ mod tests {
         assert_eq!(is_insult, true);
     }
 }
-
