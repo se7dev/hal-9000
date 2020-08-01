@@ -7,22 +7,21 @@ It offers several features for your chat, including:
 - Voting for multiple options directly in the chat
 - Organizing giveaways
 - Logging user messages sent in the chat
-- Filtering swear words in mutliple Languages (Currently German and English)
+- Filtering swear words in mutliple languages (currently German and English)
 
 # Installation: 
 - Create a new account on Twitch.tv for your chatbot
-- Generate a oauth token for the chatbot account under [this link.](https://twitchapps.com/tmi/)
-- Simply make a local copy of this repository by ``` git clone ``` either via http oder ssh
-- Rename **.env-sampe** to **.env** and replace <> it with your information:
+- Generate an oauth token for the chatbot account under [this link.](https://twitchapps.com/tmi/)
+- Simply make a local copy of this repository by ``` git clone ```
+- Rename **.env-sample** to **.env** and replace ```<_>``` with your information:
 ```
 MONGO_INITDB_ROOT_USERNAME=<database_root_username>
 MONGO_INITDB_ROOT_PASSWORD=<database_root_password>
-MONGO_INITDB_ROOT_DATABASE=<database_root_database_name>
-RUST_BACKTRACE=1
+MONGO_INITDB_DATABASE=<database_root_database_name>
+MONGO_INITDB_HOSTNAME=<Hostname-_of_mongoDb_host_as_seen_by_app>
 TWITCHPW=<oauth_token_of_twitch_bot_account>
 NICKNAME=<name_of_twitchbot_account>
 SERVERNAME=irc.chat.twitch.tv
-SERVERPORT=6667
 CHANNELS=<channels_chatbot_should_join>
 LANG=<language_for_swear_word_filter>
 ```
