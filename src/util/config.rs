@@ -42,10 +42,7 @@ pub fn get_db_config() -> ClientOptions {
 
     let hostname: String = env::var("MONGO_INITDB_HOSTNAME").unwrap();
     let port: Option<u16> = Option::from(27017 as u16);
-    let hosts = vec![StreamAddress {
-        hostname,
-        port,
-    }];
+    let hosts = vec![StreamAddress { hostname, port }];
     let mut client_options = ClientOptions::default();
     client_options.hosts = hosts;
     client_options.app_name = Some("HAL9000".to_string());
@@ -87,7 +84,7 @@ mod tests {
     use std::borrow::Borrow;
 
     #[test]
-    fn test_connection_initialized_config(){
+    fn test_connection_initialized_config() {
         env::set_var("TWITCHPW", "test_pw");
         env::set_var("NICKNAME", "test_nick");
         env::set_var("SERVERNAME", "test_server");
@@ -99,22 +96,30 @@ mod tests {
         assert_eq!(cfg.channels, Some(vec!("#test_channel".to_string())));
     }
     #[test]
-    fn test_initialized_db_config(){
+    fn test_initialized_db_config() {
         env::set_var("MONGO_INITDB_ROOT_USERNAME", "test_root_user");
         env::set_var("MONGO_INITDB_ROOT_PASSWORD", "test_root_pw");
         env::set_var("MONGO_INITDB_DATABASE", "test_initdb_db");
         env::set_var("MONGO_INITDB_HOSTNAME", "test_initdb_name");
-        let db_conf  = get_db_config();
-        assert_eq!(db_conf.credential.borrow().as_ref().unwrap().password, Some(String::from("test_root_pw")));
-        assert_eq!(db_conf.credential.borrow().as_ref().unwrap().username, Some(String::from("test_root_user")));
-        assert_eq!(db_conf.credential.borrow().as_ref().unwrap().source, Some(String::from("test_initdb_db")));
+        let db_conf = get_db_config();
+        assert_eq!(
+            db_conf.credential.borrow().as_ref().unwrap().password,
+            Some(String::from("test_root_pw"))
+        );
+        assert_eq!(
+            db_conf.credential.borrow().as_ref().unwrap().username,
+            Some(String::from("test_root_user"))
+        );
+        assert_eq!(
+            db_conf.credential.borrow().as_ref().unwrap().source,
+            Some(String::from("test_initdb_db"))
+        );
         assert_eq!(db_conf.hosts[0].hostname, "test_initdb_name");
     }
     #[test]
-    fn test_language(){
+    fn test_language() {
         env::set_var("LANG", "English");
         let language = get_lang();
-        assert_eq!(language,"English");
-
+        assert_eq!(language, "English");
     }
 }

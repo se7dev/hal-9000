@@ -3,7 +3,7 @@ pub fn get_cmd_elem(msg: &str) -> Vec<&str> {
     let split = msg.split(" ");
     let options = split.collect::<Vec<&str>>();
     println!("{:?}", options);
-    return options[1..].to_vec();
+    options[1..].to_vec()
 }
 
 #[cfg(test)]
