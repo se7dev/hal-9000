@@ -118,7 +118,7 @@ fn build_date() -> String {
     return time;
 }
 
-
+/*
 #[cfg(test)]
 mod tests {
     extern crate mongodb;
@@ -176,7 +176,7 @@ mod tests {
         db.drop(None).await;
         return Ok("Ok".to_owned());
     }
-/*
+
     #[tokio::test]
     async fn reading_db_entries() {
         env::set_var("MONGO_INITDB_ROOT_USERNAME", "admin");
