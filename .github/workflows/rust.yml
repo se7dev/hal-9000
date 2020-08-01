@@ -20,7 +20,7 @@ jobs:
       uses: SpicyPizza/create-envfile@v1.0
       with:
     # The filename for the envfile
-        file_name: .env
+        file_name: /.env
     - uses: pCYSl5EDgo/cat@master
       id: env
       with:
