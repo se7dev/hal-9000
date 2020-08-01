@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["MainController","Manages the calls to the other controllers as well as communication between the program and Twitch"]]});

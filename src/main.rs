@@ -21,9 +21,9 @@ mod util;
 
 #[tokio::main]
 /// Main does 3 things:
-/// - get language for filter that is defined in .env
-/// - instantiate a MainController
-/// - start listening for incoming chat messages
+/// get language for filter that is defined in .env,
+/// instantiate a MainController,
+/// start listening for incoming chat messages,
 async fn main() {
     simple_logger::init_with_level(get_logger_level()).unwrap();
     debug!("Program starting");

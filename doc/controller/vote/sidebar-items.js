@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["result_string_builder","Used to build a nicely readable string containing the end result of a vote"]],"struct":[["VoteController","Manages voting on a channel"]]});
