@@ -1,7 +1,10 @@
-use std::collections::{HashSet};
+use std::collections::HashSet;
 use std::fs::File;
 use std::io::Read;
+
 use serde_json::Value;
+
+#[derive(Debug)]
 /// # Filter
 /// Filter can filter words from a given string using a JSON dictionary
 /// It holds a Hashset **insults** which represent words that should be filtered out
@@ -35,6 +38,7 @@ impl Filter {
     /// ```
     pub fn new(language: &str) -> Filter {
         // init filter
+        info!("Initiating filter");
         let mut filter = Filter { insults: HashSet::new() };
         // Read JSON to String
         let mut data = String::new();

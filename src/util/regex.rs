@@ -1,5 +1,6 @@
 use lazy_static::lazy_static;
 use regex::Regex;
+
 lazy_static! {
 /// Regular Expressions to match incoming chatbot command: send a "pong!" message
 pub static ref PING: Regex = Regex::new(r"^!ping.*$").unwrap();
