@@ -21,7 +21,13 @@ jobs:
       with:
     # The filename for the envfile
         file_name: .env
-    - name: Docker
-      run: docker-compose up -d
+    - name: Docker compose pull
+      run: docker-compose pull  
+    - name: Docker Layer Caching
+      uses: satackey/action-docker-layer-caching@v0.0.4
+    - run: docker-compose up --build
+
+
+
     #- name: Run tests
      # run: cargo test
