@@ -21,6 +21,13 @@ jobs:
       with:
     # The filename for the envfile
         file_name: .env
+    - uses: pCYSl5EDgo/cat@master
+      id: env
+      with:
+        path: .env
+    - run: echo $TEXT
+      env:
+        TEXT: ${{ steps.env.outputs.text }}  
     - name: Docker compose pull
       run: docker-compose pull  
     - name: Docker Layer Caching
