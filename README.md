@@ -61,6 +61,5 @@ See [GPT2-License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) for d
 - Sadly not all our set goals were reachable (Point system)
 - This was due to not being able to extract users from sent messages
 - With the other set goals we are quite happy, although some of the functions could still use refactoring
-- Getting used to the async concept (for accessing our MongoDB) in Rust was a bit tricky at the beginning, 
-but it was good to dive into it nonetheless
 - Test coverage could be better for some functions
+- Testing the database and Twitch IRC with Travis was tricky, so we resorted to testing it only locally (See PR #34)
