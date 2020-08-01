@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["eval_config","Builds a Config from given environment variables saved in .env"],["get_db_config","Builds and returns ClientOptions based on config keys stored in .env"],["get_lang","Gets the language defined for Filter from LANG saved in .env"],["get_logger_level","Sets logger level of app"]]});

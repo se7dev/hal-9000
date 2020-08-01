@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["config",""],["get_item",""],["regex",""],["send",""]]});

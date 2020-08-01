@@ -1,1 +1,0 @@
-initSidebarItems({"fn":[["get_cmd_elem","Returns the strings after the command string as a Vector of Strings that has been split by whitespace"]]});

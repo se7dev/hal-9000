@@ -1,1 +1,0 @@
-initSidebarItems({"mod":[["bot",""],["database",""],["filter",""],["giveaway",""],["vote",""]]});
