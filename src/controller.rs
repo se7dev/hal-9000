@@ -12,7 +12,6 @@
 //! ## Giveaway:
 //! Contains giveaway functionality
 
-pub mod filter;
 pub mod bot;
 pub mod database;
 pub mod filter;

@@ -10,7 +10,6 @@
 //! ## Send:
 //! Wrapper for sending messages to twitch and handling errors
 
-pub mod regex;
 pub mod config;
 pub mod get_item;
 pub mod regex;
