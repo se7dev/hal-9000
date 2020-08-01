@@ -53,7 +53,7 @@ A few notes on some of the variables:
 [RoWe90](https://github.com/RoWe90)
 
 # License: 
-hal9000 is distributed under the terms of the GPT3 License.
+hal9000 is distributed under the terms of the GPT2 License.
 
 See [GPT3-License](https://choosealicense.com/licenses/gpl-3.0/) for details.
 
