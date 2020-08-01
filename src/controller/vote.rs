@@ -1,7 +1,6 @@
-use std::collections::{VecDeque, HashMap};
+use std::collections::HashMap;
 use std::iter::FromIterator;
-use crate::controller::main_controller::MainController;
-use irc::client::Client;
+
 use crate::util::get_item::get_cmd_elem;
 use std::borrow::Borrow;
 
@@ -17,6 +16,7 @@ pub struct VoteController {
 impl VoteController {
     /// Instantiates a new VoteController with an empty HashMap
     pub fn new() -> VoteController {
+        info!("Initiating vote controller");
         VoteController {
             votes: HashMap::new(),
         }
@@ -31,12 +31,16 @@ impl VoteController {
             let incoming_vote = get_cmd_elem(&vote_msg);
             if incoming_vote.len() > 0 {
                 eval_vote = incoming_vote.first().unwrap().to_owned().to_owned();
+                debug!("Vote elements are {}", eval_vote);
             } else {
                 return "Not a valid entry";
             }
             if self.check_if_valid(&eval_vote) {
-                let (_, val) = self.votes.get_key_value(&eval_vote).unwrap();
-                self.votes.insert(eval_vote, val + 1);
+                // Warning https://github.com/rust-lang/rust/issues/59159
+                let shared = &self.votes;
+                let val = shared.get_key_value(&eval_vote).unwrap().1 + 1;
+                self.votes.insert(eval_vote, val);
+                // End of warning
                 return "Entry added";
             } else {
                 return "Not a valid entry";
@@ -66,7 +70,7 @@ impl VoteController {
         let test = self.votes.clone();
         let mut result: Vec<(String, i32)> = Vec::from_iter(test.into_iter());
         result.sort_by(|&(_, a), &(_, b)| b.cmp(&a));
-        println!("{:?}", result);
+        debug!("Results are {:?}", result);
         self.votes = HashMap::new();
         result_string_builder(result)
     }
@@ -74,8 +78,10 @@ impl VoteController {
     /// Checks if vote is valid by comparing passed key to elements in votes.
     pub fn check_if_valid(&self, key: &str) -> bool {
         if self.votes.contains_key(key) {
+            debug!("Vote is valid");
             return true;
         }
+        debug!("Vote is not valid");
         return false;
     }
 }

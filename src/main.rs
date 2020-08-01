@@ -6,28 +6,30 @@
 //! participants
 //! - logging of chat messages in the background
 
-#![allow(warnings)]
+#[macro_use]
+extern crate log;
+extern crate mongodb;
+extern crate simple_logger;
+extern crate tokio;
+
+use controller::bot::MainController;
+use util::config::get_lang;
+use util::config::get_logger_level;
 
 mod controller;
 mod util;
 
-extern crate log;
-extern crate simple_logger;
-extern crate mongodb;
-extern crate tokio;
-
-use controller::main_controller::MainController;
-use irc::client::prelude::Config;
-use util::config::eval_config;
-use util::config::get_lang;
-
 #[tokio::main]
+/// Main does 3 things:
+/// - get language for filter that is defined in .env
+/// - instantiate a MainController
+/// - start listening for incoming chat messages
 async fn main() {
-    /// Main does 3 things:
-    /// - get language for filter that is defined in .env
-    /// - instantiate a MainController
-    /// - start listening for incoming chat messages
+    simple_logger::init_with_level(get_logger_level()).unwrap();
+    debug!("Program starting");
     let lang = get_lang();
+    debug!("Lang is {}", lang);
     let mut main_controller: MainController = MainController::new(lang);
+    trace!("Controller {:#?}", main_controller);
     main_controller.listen()
 }

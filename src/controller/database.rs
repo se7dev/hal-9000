@@ -1,13 +1,14 @@
 #![allow(warnings)]
 
+use std::borrow::Borrow;
+
 use chrono::{Datelike, Utc};
 use futures::stream::StreamExt;
 use mongodb::{
-    bson::{doc, Bson},
-    error::Result,
+    bson::{Bson, doc},
     Client,
+    error::Result,
 };
-use std::borrow::Borrow;
 use mongodb::options::ClientOptions;
 
 /// A Message must have a message, a user that sent the message and a timestamp (DD-MM-YY)
@@ -23,6 +24,8 @@ impl Message {
         Message { message, timestamp }
     }
 }
+
+#[derive(Debug)]
 /// Sets up a connection to the MongoDB Database holding the logs.
 pub struct DatabaseConnector {
     client: Client,
@@ -34,6 +37,7 @@ impl DatabaseConnector {
     ///
     /// It's using a **config** for connection information.
     pub async fn new(config: ClientOptions) -> DatabaseConnector {
+        info!("Init database connector");
         let database_name = config.credential.clone().unwrap().source.unwrap();
         let client = Client::with_options(config);
         match client {
@@ -43,7 +47,7 @@ impl DatabaseConnector {
                     database_name,
                 }
             }
-            Err(e) => { panic!("DB not init") }
+            Err(e) => { panic!("DB could not initiated") }
         }
     }
 
@@ -83,7 +87,7 @@ impl DatabaseConnector {
 
     /// write_logs() writes the collected messages into the database
     pub async fn write_logs(&self, msg: &str) -> Result<String> {
-        println!("DB write");
+        debug!("DB write message {} to db", msg);
         let db = self.client.database(self.database_name.clone().as_str());
         let time = build_date();
         let coll = db.collection(time.as_str());
@@ -93,8 +97,7 @@ impl DatabaseConnector {
                   "timestamp" : time},
             None,
         ).await;
-        println!("This was something");
-        println!("{:?}", result);
+
         // Insert the document into the database.
         return Ok("Ok".to_owned());
     }

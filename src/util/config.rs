@@ -1,7 +1,8 @@
-use irc::client::prelude::Config;
 use std::env;
-use mongodb::options::{ClientOptions, StreamAddress, Credential};
 
+use irc::client::prelude::Config;
+use log::Level;
+use mongodb::options::{ClientOptions, Credential, StreamAddress};
 
 /// Builds a **Config** from given environment variables saved in .env
 pub fn eval_config() -> Config {
@@ -25,6 +26,7 @@ pub fn eval_config() -> Config {
     };
     return cfg;
 }
+
 /// Builds and returns **ClientOptions** based on config keys stored in .env
 pub fn get_db_config() -> ClientOptions {
     // ("mongodb://root:root@database:27017/")
@@ -51,11 +53,33 @@ pub fn get_db_config() -> ClientOptions {
     client_options.direct_connection = Some(true);
     return client_options;
 }
+
 /// Gets the language defined for Filter from LANG saved in .env
 pub fn get_lang() -> String {
     return env::var("LANG").unwrap();
 }
 
+/// Sets logger level of app
+pub fn get_logger_level() -> Level {
+    return match env::var("LOGGER_LEVEL") {
+        Ok(str) => {
+            return match str.as_str() {
+                "debug" => Level::Debug,
+                "info" => Level::Info,
+                "trace" => Level::Trace,
+                "warn" => Level::Warn,
+                _ => {
+                    eprint!("Log level string was not set properly");
+                    Level::Error
+                }
+            };
+        }
+        Err(_e) => {
+            eprint!("Log level was not set");
+            Level::Error
+        }
+    };
+}
 
 #[cfg(test)]
 mod tests {
@@ -70,14 +94,6 @@ mod tests {
         env::set_var("SERVERNAME", "test_server");
         env::set_var("CHANNELS", "#test_channel");
         let cfg = eval_config();
-        /*
-        nickname: Some(nick.to_owned()),
-        server: Some(server_name.to_owned()),
-        port: Some(server_port.to_owned()),
-        password: Some(oauth_token.to_owned()),
-        channels: Some(channels),
-        */
-
         assert_eq!(cfg.nickname, Some("test_nick".to_string()));
         assert_eq!(cfg.server, Some("test_server".to_string()));
         assert_eq!(cfg.password, Some("test_pw".to_string()));

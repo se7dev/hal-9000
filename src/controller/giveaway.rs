@@ -1,7 +1,8 @@
 use std::collections::HashSet;
-use rand::{thread_rng, Rng};
-use regex::Regex;
 
+use rand::{Rng, thread_rng};
+
+#[derive(Debug)]
 /// # GiveawayController
 /// Serves as the controller to organize giveaways in channels
 /// Holds **users** as a HashSet and **giveaway_running** to check if giveaway has been started.
@@ -27,6 +28,7 @@ impl GiveawayController {
     ///  let mut users = GiveawayController { users: HashSet::new(), giveaway_running: false };
     /// ```
     pub fn new() -> GiveawayController {
+        info!("Init Giveaway controller");
         GiveawayController {
             users: HashSet::new(),
             giveaway_running: false,
@@ -69,7 +71,7 @@ impl GiveawayController {
   /// ```
     pub fn add_user(&mut self, user: &String) {
         if self.giveaway_running {
-            let mut enter = user.split_whitespace();
+            let enter = user.split_whitespace();
             let usr = enter.collect::<Vec<_>>();
             let _boo = self.users.insert(String::from(usr[1]));
         }
@@ -100,8 +102,6 @@ impl GiveawayController {
         };
     }
 }
-
-fn main() {}
 
 #[cfg(test)]
 mod tests {
@@ -134,6 +134,7 @@ mod tests {
         let chosen = users.choose_user();
         assert_eq!(chosen, "Nobody entered the giveaway");
     }
+
     #[test]
     // Users should choose a random User from list of Users
     fn dont_add_users_when_no_giveaway_running() {
