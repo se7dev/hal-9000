@@ -136,6 +136,8 @@ mod tests {
     use futures::TryFutureExt;
     use std::borrow::Borrow;
     use crate::util::config::{eval_config, get_db_config};
+    use std::env;
+
 
 
     const DATE: &str = "29-07-20";
@@ -177,6 +179,15 @@ mod tests {
 
     #[tokio::test]
     async fn reading_db_entries() {
+        env::set_var("MONGO_INITDB_ROOT_USERNAME", "admin");
+        env::set_var("MONGO_INITDB_ROOT_PASSWORD", "admin");
+        env::set_var("MONGO_INITDB_DATABASE", "chatBot");
+        env::set_var("MONGO_INITDB_HOSTNAME", "database");
+        env::set_var("TWITCHPW", "oauth:tevbo51i9oxvn8gzlzdb0x7g3ze51e");
+        env::set_var("NICKNAME", "HAL0900");
+        env::set_var("SERVERNAME", "irc.chat.twitch.tv");
+        env::set_var("CHANNELS", "#rowe90");
+        env::set_var("LANG", "Deutsch");
         reset_db().await;
         setup_db().await;
         let db_config = get_db_config();
