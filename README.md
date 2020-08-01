@@ -56,3 +56,10 @@ A few notes on some of the variables:
 hal9000 is distributed under the terms of the GPT3 License.
 
 See [GPT3-License](https://choosealicense.com/licenses/gpl-3.0/) for details.
+
+# Self criticism
+- Sadly not all our set goals were reachable (Point system)
+- This was due to not being able to extract users from sent messages
+- With the other set goals we are quite happy, although some of the functions could still use refactoring
+- Getting used to the async concept (for accessing our MongoDB) in Rust was a bit tricky at the beginning, 
+but it was good to dive into it nonetheless
