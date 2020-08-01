@@ -16,11 +16,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Create .env file
-      uses: SpicyPizza/create-envfile@v1.0
-      with:
+    #- name: Create .env file
+    #  uses: SpicyPizza/create-envfile@v1.0
+    #  with:
     # The filename for the envfile
-        file_name: .env
+    #    file_name: .env
     - name: Docker
       run: docker-compose up -d
     #- name: Run tests
