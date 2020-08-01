@@ -3,6 +3,7 @@ use std::iter::FromIterator;
 use crate::controller::main_controller::MainController;
 use irc::client::Client;
 use crate::util::get_item::get_cmd_elem;
+use std::borrow::Borrow;
 
 /// Manages voting on a channel
 ///
@@ -22,13 +23,18 @@ impl VoteController {
     }
     /// Adds a vote to the current motion.
     ///
-    /// It checks if the vote is valid, only then it is added to the votes.
+    /// It checks if the string contains a vote.
+    /// If it is valid, only then is it added to the votes.
     pub fn add(&mut self, vote_msg: &str) -> &str {
+        let mut eval_vote: String = String::from("");
         if self.votes.len() > 0 {
-            let eval_vote: String = get_cmd_elem(&vote_msg).first().unwrap().to_owned().to_owned();
-            println!("{}", eval_vote);
+            let incoming_vote = get_cmd_elem(&vote_msg);
+            if incoming_vote.len() > 0 {
+                eval_vote = incoming_vote.first().unwrap().to_owned().to_owned();
+            } else {
+                return "Not a valid entry";
+            }
             if self.check_if_valid(&eval_vote) {
-                println!("passed");
                 let (_, val) = self.votes.get_key_value(&eval_vote).unwrap();
                 self.votes.insert(eval_vote, val + 1);
                 return "Entry added";
@@ -73,6 +79,7 @@ impl VoteController {
         return false;
     }
 }
+
 /// Used to build a nicely readable string containing the end result of a vote
 fn result_string_builder(result: Vec<(String, i32)>) -> String {
     let mut string = Vec::<String>::new();
@@ -81,4 +88,52 @@ fn result_string_builder(result: Vec<(String, i32)>) -> String {
         string.push(format!("|{} has {} votes|", key, val));
     }
     return string.join("");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_vote_controller_instantiation() {
+        let vote_controller = VoteController::new();
+        assert_eq!(vote_controller.votes.is_empty(), true);
+    }
+
+    #[test]
+    fn test_adding_votes() {
+        let mut vote_controller = VoteController::new();
+        vote_controller.start_vote("!votestart test1 test2");
+        vote_controller.add("!vote test1");
+        assert_eq!(vote_controller.votes.is_empty(), false);
+    }
+
+    #[test]
+    fn test_empty_votes() {
+        let mut vote_controller = VoteController::new();
+        vote_controller.start_vote("!votestart test1 test2");
+        vote_controller.add("!vote");
+        assert_eq!(vote_controller.votes.contains_key("!vote"), false);
+    }
+    #[test]
+    fn test_votes_evaluation() {
+        let mut vote_controller = VoteController::new();
+        vote_controller.start_vote("!votestart test1 test2");
+        vote_controller.add("!vote test1");
+        vote_controller.add("!vote test1");
+        vote_controller.add("!vote test2");
+        let result = vote_controller.close_and_eval();
+        assert_eq!(result, "Vote ist closed.|test1 has 2 votes||test2 has 1 votes|");
+    }
+    #[test]
+    fn test_vote_validation() {
+        let mut vote_controller = VoteController::new();
+        vote_controller.start_vote("!votestart test1 test2");
+        let mut res = vote_controller.check_if_valid("test1");
+        assert_eq!(res, true);
+        let mut res = vote_controller.check_if_valid("test5");
+        assert_eq!(res, false);
+        let mut res = vote_controller.check_if_valid("");
+        assert_eq!(res, false);
+    }
 }
