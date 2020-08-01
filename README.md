@@ -29,11 +29,11 @@ LANG=<language_for_swear_word_filter>
 A few notes on some of the variables:
 
 - **CHANNELS:** Should be in the form of #username
-- **LANG:** Can be Deutsch, German, English or Englisch. If anything else is put in here, it defaults to English.
+- **LANG:** Can be Deutsch, German, English or Englisch. If anything else is put in here, filter will default to English.
 
 # Usage: 
 - ```cd``` into the directory of the checked out repo
-- use ```cargo run``` to start the chatbot
+- Use ```cargo run``` to start the chatbot
 - In your chat, you can now see the chatbot as a new user
 - You can now use the chatbot commands below from your chat
 
