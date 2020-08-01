@@ -81,7 +81,6 @@ pub fn get_logger_level() -> Level {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use mongodb::options::{ClientOptions, Credential, StreamAddress};
     use std::borrow::Borrow;
 
     #[test]

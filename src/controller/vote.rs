@@ -113,14 +113,6 @@ mod tests {
     }
 
     #[test]
-    fn test_empty_votes() {
-        let mut vote_controller = VoteController::new();
-        vote_controller.start_vote("!votestart test1 test2");
-        vote_controller.add("!vote");
-        assert_eq!(vote_controller.votes.contains_key("!vote"), false);
-    }
-
-    #[test]
     fn test_votes_evaluation() {
         let mut vote_controller = VoteController::new();
         vote_controller.start_vote("!votestart test1 test2");
@@ -138,11 +130,11 @@ mod tests {
     fn test_vote_validation() {
         let mut vote_controller = VoteController::new();
         vote_controller.start_vote("!votestart test1 test2");
-        let mut res = vote_controller.check_if_valid("test1");
+        let res = vote_controller.check_if_valid("test1");
         assert_eq!(res, true);
-        let mut res = vote_controller.check_if_valid("test5");
+        let res = vote_controller.check_if_valid("test5");
         assert_eq!(res, false);
-        let mut res = vote_controller.check_if_valid("");
+        let res = vote_controller.check_if_valid("");
         assert_eq!(res, false);
     }
 }
