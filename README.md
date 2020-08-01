@@ -34,7 +34,8 @@ A few notes on some of the variables:
 # Usage: 
 - ```cd``` into the directory of the checked out repo
 - use ```cargo run``` to start the chatbot
-- In your chat, you can now send commands to your chatbot
+- In your chat, you can now see the chatbot as a new user
+- You can now use the chatbot commands below from your chat
 
 ## List of chatbot commands:
 - **!ping**: Chatbot should respond with "!pong"
