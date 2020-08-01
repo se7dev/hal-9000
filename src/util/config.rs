@@ -25,7 +25,7 @@ pub fn eval_config() -> Config {
     };
     return cfg;
 }
-/// Builds and returns ClientOptions based on config keys stored in .env
+/// Builds and returns **ClientOptions** based on config keys stored in .env
 pub fn get_db_config() -> ClientOptions {
     // ("mongodb://root:root@database:27017/")
     let username: Option<String> = Option::from(env::var("MONGO_INITDB_ROOT_USERNAME").unwrap());
@@ -54,4 +54,52 @@ pub fn get_db_config() -> ClientOptions {
 /// Gets the language defined for Filter from LANG saved in .env
 pub fn get_lang() -> String {
     return env::var("LANG").unwrap();
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use mongodb::options::{ClientOptions, StreamAddress, Credential};
+    use std::borrow::Borrow;
+
+    #[test]
+    fn test_connection_initialized_config(){
+        env::set_var("TWITCHPW", "test_pw");
+        env::set_var("NICKNAME", "test_nick");
+        env::set_var("SERVERNAME", "test_server");
+        env::set_var("CHANNELS", "#test_channel");
+        let cfg = eval_config();
+        /*
+        nickname: Some(nick.to_owned()),
+        server: Some(server_name.to_owned()),
+        port: Some(server_port.to_owned()),
+        password: Some(oauth_token.to_owned()),
+        channels: Some(channels),
+        */
+
+        assert_eq!(cfg.nickname, Some("test_nick".to_string()));
+        assert_eq!(cfg.server, Some("test_server".to_string()));
+        assert_eq!(cfg.password, Some("test_pw".to_string()));
+        assert_eq!(cfg.channels, Some(vec!("#test_channel".to_string())));
+    }
+    #[test]
+    fn test_initialized_db_config(){
+        env::set_var("MONGO_INITDB_ROOT_USERNAME", "test_root_user");
+        env::set_var("MONGO_INITDB_ROOT_PASSWORD", "test_root_pw");
+        env::set_var("MONGO_INITDB_DATABASE", "test_initdb_db");
+        env::set_var("MONGO_INITDB_HOSTNAME", "test_initdb_name");
+        let db_conf  = get_db_config();
+        assert_eq!(db_conf.credential.borrow().as_ref().unwrap().password, Some(String::from("test_root_pw")));
+        assert_eq!(db_conf.credential.borrow().as_ref().unwrap().username, Some(String::from("test_root_user")));
+        assert_eq!(db_conf.credential.borrow().as_ref().unwrap().source, Some(String::from("test_initdb_db")));
+        assert_eq!(db_conf.hosts[0].hostname, "test_initdb_name");
+    }
+    #[test]
+    fn test_language(){
+        env::set_var("LANG", "English");
+        let language = get_lang();
+        assert_eq!(language,"English");
+
+    }
 }

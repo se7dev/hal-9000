@@ -135,6 +135,8 @@ mod tests {
     use irc::client::prelude::Stream;
     use futures::TryFutureExt;
     use std::borrow::Borrow;
+    use crate::util::config::{eval_config, get_db_config};
+
 
     const DATE: &str = "29-07-20";
 
@@ -173,25 +175,19 @@ mod tests {
         return Ok("Ok".to_owned());
     }
 
-    // // Helper Function to assert Result Type
-    // fn check<T>(res: Result<T>) -> bool {
-    //     match res {
-    //         Ok(_) => true,
-    //         Err(_) => false,
-    //     }
-    // }
-
     #[tokio::test]
     async fn reading_db_entries() {
         reset_db().await;
         setup_db().await;
-        let logs = get_logs(DATE.to_string()).await;
+        let db_config = get_db_config();
+        let db_connector = DatabaseConnector::new(db_config).await;
+        let logs = db_connector.get_logs(DATE.to_string()).await;
         match logs {
             Ok(_) => {
                 assert_ne!(logs.borrow().as_ref().unwrap().messages.len(), 0);
                 for log in logs.unwrap().messages {
-                    println!("Log found: \n Message {} \n from User {} \n at timestamp {}",
-                             log.message, log.user, log.timestamp);
+                    println!("Log found: \n Message {} \n at timestamp {}",
+                             log.message, log.timestamp);
                     assert_eq!(log.timestamp, DATE);
                 }
             }
@@ -203,24 +199,18 @@ mod tests {
     async fn insert_db_entries() {
         reset_db().await;
         setup_db().await;
-        let mut logs = Logs { messages: Vec::new() };
-        logs.messages.push(
-            Message::new_message(
-                String::from("1"),
-                String::from("01-01-01")));
-        logs.messages.push(
-            Message::new_message(
-                String::from("2"),
-                String::from("01-01-01")));
-        write_logs(logs).await;
-        let retrieved_logs = get_logs(String::from("01-01-01")).await;
+        let db_config = get_db_config();
+        let db_connector = DatabaseConnector::new(db_config).await;
+        db_connector.write_logs("test message").await;
+        let date = build_date();
+        let retrieved_logs = db_connector.get_logs(date.clone()).await;
         match retrieved_logs {
             Ok(_) => {
                 assert_eq!(retrieved_logs.borrow().as_ref().unwrap().messages.len(), 2);
                 for log in retrieved_logs.unwrap().messages {
-                    println!("Log found: \n Message {} \n from User {} \n at timestamp {}",
-                             log.message, log.user, log.timestamp);
-                    assert_eq!(log.timestamp, "01-01-01");
+                    println!("Log found: \n Message {} \n at timestamp {}",
+                             log.message, log.timestamp);
+                    assert_eq!(log.timestamp, date.clone());
                 }
             }
             _ => println!("Message fetching did not work")

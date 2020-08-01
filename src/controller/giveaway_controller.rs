@@ -138,8 +138,8 @@ mod tests {
     // Users should choose a random User from list of Users
     fn dont_add_users_when_no_giveaway_running() {
         let mut users = GiveawayController { users: HashSet::new(), giveaway_running: false };
-        users.add_user(String::from("!giveawayenter basti"));
+        users.add_user(&String::from("!giveawayenter basti"));
         let chosen = users.choose_user();
-        assert_eq!(chosen, "Nobody entered the giveaway");
+        assert_eq!(chosen, "No giveaway running at the moment. Check back later.");
     }
 }
