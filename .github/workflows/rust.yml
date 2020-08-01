@@ -24,6 +24,16 @@ jobs:
     - uses: pCYSl5EDgo/cat@master
       id: env
       with:
+        envkey_MONGO_INITDB_ROOT_USERNAME: ${{ secrets.SMONGO_INITDB_ROOT_USERNAME }}
+        envkey_MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+        envkey_MONGO_INITDB_DATABASE: ${{ secrets.MONGO_INITDB_DATABASE }}
+        envkey_MONGO_INITDB_HOSTNAME: ${{ secrets.MONGO_INITDB_HOSTNAME }}
+        envkey_TWITCHPW: ${{ secrets.TWITCHPW }}
+        envkey_NICKNAME: ${{ secrets.NICKNAME }}
+        envkey_SERVERNAME: ${{ secrets.SERVERNAME }}
+        envkey_CHANNELS: ${{ secrets.CHANNELS }}
+        envkey_LANG: ${{ secrets.LANG }}
+
         path: .env
     - run: echo $TEXT
       env:
