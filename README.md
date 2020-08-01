@@ -55,7 +55,7 @@ A few notes on some of the variables:
 # License: 
 hal9000 is distributed under the terms of the GPT2 License.
 
-See [GPT3-License](https://choosealicense.com/licenses/gpl-3.0/) for details.
+See [GPT2-License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) for details.
 
 # Self criticism
 - Sadly not all our set goals were reachable (Point system)
