@@ -2,7 +2,6 @@ use std::collections::HashMap;
 use std::iter::FromIterator;
 
 use crate::util::get_item::get_cmd_elem;
-use std::borrow::Borrow;
 
 /// Manages voting on a channel
 ///
@@ -26,28 +25,23 @@ impl VoteController {
     /// It checks if the string contains a vote.
     /// If it is valid, only then is it added to the votes.
     pub fn add(&mut self, vote_msg: &str) -> &str {
-        let mut eval_vote: String = String::from("");
-        if self.votes.len() > 0 {
-            let incoming_vote = get_cmd_elem(&vote_msg);
-            if incoming_vote.len() > 0 {
-                eval_vote = incoming_vote.first().unwrap().to_owned().to_owned();
-                debug!("Vote elements are {}", eval_vote);
-            } else {
-                return "Not a valid entry";
-            }
+        let eval_vote: String;
+        return if self.votes.len() > 0 {
+            eval_vote = get_cmd_elem(&vote_msg).first().unwrap().to_owned().to_owned();
+            debug!("Vote elements are {}", eval_vote);
             if self.check_if_valid(&eval_vote) {
                 // Warning https://github.com/rust-lang/rust/issues/59159
                 let shared = &self.votes;
                 let val = shared.get_key_value(&eval_vote).unwrap().1 + 1;
                 self.votes.insert(eval_vote, val);
                 // End of warning
-                return "Entry added";
+                "Entry added"
             } else {
-                return "Not a valid entry";
+                "Not a valid entry"
             }
         } else {
-            return "Vote not active";
-        }
+            "Vote not active"
+        };
     }
     /// Starts a motion
     ///
@@ -121,6 +115,7 @@ mod tests {
         vote_controller.add("!vote");
         assert_eq!(vote_controller.votes.contains_key("!vote"), false);
     }
+
     #[test]
     fn test_votes_evaluation() {
         let mut vote_controller = VoteController::new();
@@ -131,6 +126,7 @@ mod tests {
         let result = vote_controller.close_and_eval();
         assert_eq!(result, "Vote ist closed.|test1 has 2 votes||test2 has 1 votes|");
     }
+
     #[test]
     fn test_vote_validation() {
         let mut vote_controller = VoteController::new();

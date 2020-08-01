@@ -1,7 +1,3 @@
-#![allow(warnings)]
-
-use std::borrow::Borrow;
-
 use chrono::{Datelike, Utc};
 use futures::stream::StreamExt;
 use mongodb::{
@@ -47,10 +43,10 @@ impl DatabaseConnector {
                     database_name,
                 }
             }
-            Err(e) => { panic!("DB could not initiated") }
+            Err(_e) => { panic!("DB could not initiated") }
         }
     }
-
+    #[allow(dead_code)]
     /// get_logs() fetches all messages that have been sent on a specific date
     pub async fn get_logs(&self, date: String) -> Result<Logs> {
         let mut logs = Logs {
@@ -91,12 +87,12 @@ impl DatabaseConnector {
         let db = self.client.database(self.database_name.clone().as_str());
         let time = build_date();
         let coll = db.collection(time.as_str());
-        let result = coll.insert_one(
+        if let Err(e) = coll.insert_one(
             doc! {
                 "message": msg,
                   "timestamp" : time},
             None,
-        ).await;
+        ).await { error!("Could not write db entry {:#?}", e) }
 
         // Insert the document into the database.
         return Ok("Ok".to_owned());
@@ -127,19 +123,21 @@ mod tests {
     extern crate mongodb;
     extern crate tokio;
 
-    use super::*;
+    use std::borrow::Borrow;
+
     use chrono::{Datelike, Utc};
     use futures::stream::StreamExt;
-    use mongodb::{
-        bson::{doc, Bson},
-        error::Result,
-        Client,
-    };
-    use irc::client::prelude::Stream;
     use futures::TryFutureExt;
-    use std::borrow::Borrow;
+    use irc::client::prelude::Stream;
+    use mongodb::{
+        bson::{Bson, doc},
+        Client,
+        error::Result,
+    };
+
     use crate::util::config::{eval_config, get_db_config};
 
+    use super::*;
 
     const DATE: &str = "29-07-20";
 
