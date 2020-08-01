@@ -63,3 +63,4 @@ See [GPT2-License](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html) for d
 - With the other set goals we are quite happy, although some of the functions could still use refactoring
 - Getting used to the async concept (for accessing our MongoDB) in Rust was a bit tricky at the beginning, 
 but it was good to dive into it nonetheless
+- Test coverage could be better for some functions
