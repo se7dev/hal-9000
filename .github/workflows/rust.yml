@@ -16,7 +16,35 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Build
-      run: cargo build
-    - name: Run tests
-      run: cargo test
+    - name: Create .env file
+      uses: SpicyPizza/create-envfile@v1.0
+      with:
+    # The filename for the envfile
+        file_name: ./.env
+    - uses: pCYSl5EDgo/cat@master
+      id: env
+      with:
+        envkey_MONGO_INITDB_ROOT_USERNAME: ${{ secrets.SMONGO_INITDB_ROOT_USERNAME }}
+        envkey_MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGO_INITDB_ROOT_PASSWORD }}
+        envkey_MONGO_INITDB_DATABASE: ${{ secrets.MONGO_INITDB_DATABASE }}
+        envkey_MONGO_INITDB_HOSTNAME: ${{ secrets.MONGO_INITDB_HOSTNAME }}
+        envkey_TWITCHPW: ${{ secrets.TWITCHPW }}
+        envkey_NICKNAME: ${{ secrets.NICKNAME }}
+        envkey_SERVERNAME: ${{ secrets.SERVERNAME }}
+        envkey_CHANNELS: ${{ secrets.CHANNELS }}
+        envkey_LANG: ${{ secrets.LANG }}
+
+        path: .env
+    - run: echo $TEXT
+      env:
+        TEXT: ${{ steps.env.outputs.text }}  
+    - name: Docker compose pull
+      run: docker-compose pull  
+    - name: Docker Layer Caching
+      uses: satackey/action-docker-layer-caching@v0.0.4
+    - run: docker-compose up --build
+
+
+
+    #- name: Run tests
+     # run: cargo test

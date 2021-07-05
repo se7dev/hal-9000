@@ -9,7 +9,6 @@ services:
     volumes:
       - ./src:/usr/app/src
       - ./Cargo.toml:/usr/app/Cargo.toml
-      - ./Cargo.lock:/usr/app/Cargo.lock
     env_file:
       - .env
     depends_on:
